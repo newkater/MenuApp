@@ -14,9 +14,14 @@ namespace MenuApp.Controllers
             _menuContext = menuContext;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _menuContext.Dishes.ToListAsync());
+            var dishes = _menuContext.Dishes.Select(x => x);
+            if (!string.IsNullOrWhiteSpace(searchString))
+            {
+                dishes = dishes.Where(d => d.Name.Contains(searchString));
+            }
+            return View(await dishes.ToListAsync());
         }
 
         public async Task<IActionResult> Details(int id)
